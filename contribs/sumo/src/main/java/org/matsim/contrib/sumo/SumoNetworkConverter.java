@@ -243,8 +243,8 @@ public class SumoNetworkConverter implements Callable<Integer> {
 
         for (SumoNetworkHandler.Edge edge : sumoHandler.edges.values()) {
 
-            // skip railways and unknowns
-            if (edge.type == null || !edge.type.startsWith("highway"))
+            // skip unknowns
+            if (edge.type == null || !edge.type.startsWith("highway") || !edge.type.startsWith("railway"))
                 continue;
 
             Link link = f.createLink(Id.createLinkId(edge.id),
@@ -258,12 +258,40 @@ public class SumoNetworkConverter implements Callable<Integer> {
             link.getAttributes().putAttribute(NetworkUtils.TYPE, edge.type);
 
             link.setNumberOfLanes(edge.lanes.size());
-            Set<String> modes = Sets.newHashSet(TransportMode.car, TransportMode.ride);
+            Set<String> modes = Sets.newHashSet();
+            
+            if (edge.type.startsWith("highway")) 
+            { 
+            	modes.add(TransportMode.ride);
+            	modes.add(TransportMode.car);
+            	modes.add(TransportMode.car_passenger);
+            }
+            
+            if (edge.type.startsWith("railway")) 
+            {
+            	modes.add(TransportMode.train);
+            }
 
             SumoNetworkHandler.Type type = sumoHandler.types.get(edge.type);
 
             if (type.allow.contains("bicycle") || (type.allow.isEmpty() && !type.disallow.contains("bicycle")))
                 modes.add(TransportMode.bike);
+            
+            if (type.allow.contains("rail") || (type.allow.isEmpty() && !type.disallow.contains("rail")))
+                modes.add(TransportMode.rail);
+                modes.add(TransportMode.pt);
+
+            if (type.allow.contains("pedestrian") || (type.allow.isEmpty() && !type.disallow.contains("pedestrian")))
+                modes.add(TransportMode.pedestrian);
+                modes. add(TransportMode.walk);
+
+            if (type.allow.contains("bus") || (type.allow.isEmpty() && !type.disallow.contains("bus")))
+                modes.add(TransportMode.bus);
+                modes.add(TransportMode.pt);  
+                
+            if (type.allow.contains("coach") || (type.allow.isEmpty() && !type.disallow.contains("coach")))
+                modes.add(TransportMode.coach);
+                modes.add(TransportMode.pt);
 
             link.setAllowedModes(modes);
             link.setLength(edge.getLength());

@@ -31,6 +31,7 @@ package org.matsim.api.core.v01;
 public final class TransportMode {
 
 	public static final String car = "car";
+	public static final String car_passenger = "car_passenger";
 	public static final String ride = "ride";
 	public static final String bike = "bike";
 	public static final String motorcycle = "motorcycle" ;
@@ -43,6 +44,10 @@ public final class TransportMode {
 	public static final String train = "train";
 	public static final String ship = "ship";
 	public static final String airplane = "airplane";
+	public static final String rail = "rail";
+	public static final String bus = "bus";
+	public static final String coach = "coach";
+	public static final String pedestrian = "pedestrian";
 
 
 	@Deprecated // use non_network_walk
